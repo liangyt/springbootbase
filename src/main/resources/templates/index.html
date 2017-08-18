@@ -1,0 +1,39 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Test</title>
+    <link rel="stylesheet" th:href="@{css/element-ui.css}" />
+    <script th:src="@{js/vue.js}"></script>
+    <script th:src="@{js/element-ui.js}"></script>
+    <script th:src="@{js/axios.js}"></script>
+</head>
+<body>
+<div id="app">
+    <el-input v-model="id" placeholder="id"></el-input>
+    <el-input v-model="name" placeholder="name"></el-input>
+    <el-button v-on:click="save">提交</el-button>
+</div>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            id: '',
+            name: ''
+        },
+        methods: {
+            save: function () {
+                console.log('test')
+                axios.post('/api/test/saveOrUpdate', {id: this.id, name: this.name})
+                    .then(function (res) {
+                        console.log(res)
+                    })
+            }
+        }
+    })
+</script>
+</body>
+</html>
