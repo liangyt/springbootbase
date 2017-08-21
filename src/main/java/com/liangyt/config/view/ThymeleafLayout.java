@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 描述：
+ * 描述：配置thymeleaf-layout-dialect
  *
  * @author tony
  * @创建时间 2017-08-18 11:36

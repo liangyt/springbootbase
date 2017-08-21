@@ -32,6 +32,14 @@ public class BaseController {
      *
      * @param ex 异常
      * @return 组装异常结果
+     * {
+     *     code: 0,
+     *     message: "失败",
+     *     data: {
+     *         name: "姓名不能为空",
+     *         ...
+     *     }
+     * }
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Object validatorException(MethodArgumentNotValidException ex) {

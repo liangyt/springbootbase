@@ -25,7 +25,7 @@ public class TestRestController extends BaseController {
     private TestService testService;
 
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
-    public Object saveOrUpdate(@RequestBody@Validated Test test) {
+    public Object saveOrUpdate(@RequestBody @Validated Test test) {
         if (test.getId() != null) {
             testService.update(test);
         }

@@ -3,7 +3,6 @@ package com.liangyt.common.view;
 import com.liangyt.entity.test.Test;
 import com.liangyt.service.test.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -13,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
- * 描述：拦截器实现
+ * 描述：测试拦截器实现
  *
  * @author tony
  * @创建时间 2017-08-18 15:28

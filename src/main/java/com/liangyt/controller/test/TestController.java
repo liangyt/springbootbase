@@ -1,6 +1,7 @@
 package com.liangyt.controller.test;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -14,7 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class TestController {
 
     @RequestMapping(value = "/hello")
-    public String hello() {
+    public String hello(Model model) {
+        model.addAttribute("hello", "您好");
         return "hello";
     }
 }
