@@ -376,3 +376,96 @@ hibernate补充的注解中，最后3个不常用，可忽略。
     }
 ```
 * 第一个分支学习到这里全结束
+
+#### learn.02
+从这里开始是在分支<code>learn.01</code>的基础上进行的改进。
+##### 一、logback
+spring-boot 默认的日志插件就是logback,在spring-boot-starter下面默认依赖了
+```$xslt
+logback-classic
+logback-core
+slf4-api
+jcl-over-slf4j
+jul-to-slf4j
+log4j-over-slf4j
+```
+spring-boot 也提供了一些参数用于设置日志，但相对于配置文件来说话稍微简单了一点，其中部分配置如下:
+```$xslt
+# 日志处理
+# 默认情况下，spring boot从控制台打印出来的日志级别只有ERROR,WARN,INFO;如果希望放开DEBUG级别的话设置 debug=true;
+debug=true
+# 日志格式
+logging.pattern.console=%-4relative [%thread] %-5level %logger{35} - %msg %n
+logging.pattern.file=%-4relative [%thread] %-5level %logger{35} - %msg %n
+# 针对不同的类或者包设置日志级别;root为父级别
+logging.level.root=DEBUG
+logging.level.com.liangyt=DEBUG
+#logging.level.org.springframework.web=DEBUG
+# 日志输出文件
+logging.path=logs
+logging.file=log.log
+```
+如果要求不是特别高的话，这个配置也基本够用了。当然这里也提供了一个引入日志配置文件的参数，不过我没有试过
+
+    logging.config=logconfig.xml
+除了使用application.properties配置以外，那就是直接配置logback.xml文件了。  
+在logback.xml配置文件里面我做了详细的说明，这里就不再重复说了，看文件就知道每个标签是什么含义了。  
+我试了一下把日志保存到mongodb里面，感觉还不错，配置也比较简单。
+添加依赖:
+```$xslt
+<!--mongodb-->
+<dependency>
+    <groupId>org.mongodb</groupId>
+    <artifactId>mongo-java-driver</artifactId>
+    <version>3.4.2</version>
+</dependency>
+```
+一个类和一部分日志配置：  
+配置mongodb的连接配置，以及保存日志到数据库的一个类，使用class属性引入：
+```$xslt
+<!--日志保存到Mongondb-->
+<appender name="MONGODB" class="com.liangyt.config.db.LogMongoDBAppender">
+    <DbHost>localhost</DbHost>
+    <DbPort>27017</DbPort>
+    <DbName>exapp</DbName>
+    <DbCollectionName>logging</DbCollectionName>
+</appender>
+
+<!--再配置一个logger-->
+
+<logger name="com.liangyt" level="DEBUG">
+    <appender-ref ref="MONGODB" />
+</logger>
+```
+这样的话<code>com.liangyt</code>生成的日志就会进到这个类<code>com.liangyt.config.db.LogMongoDBAppender</code>,然后覆盖方法 <code>append</code>保存进数据库.
+
+如果想让相关的日志信息保存到数据库中，则可以这样使用:
+```$xslt
+protected Logger mongodbLogger = LoggerFactory.getLogger("MONGODB");
+mongodbLogger.info("保存到数据库中");
+```
+
+##### 二、添加AOP
+因为<code>spring-boot-starter-thymeleaf</code>下已经有了 <code>spring-aop</code>,只是缺少了<code>org.aspectj</code>相关的两个包，所以只需要添加中两个依赖：
+```$xslt
+<!--aspectj-->
+<dependency>
+    <groupId>org.aspectj</groupId>
+    <artifactId>aspectjrt</artifactId>
+    <version>${aspectj.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.aspectj</groupId>
+    <artifactId>aspectjweaver</artifactId>
+    <version>${aspectj.version}</version>
+</dependency>
+```
+就可以了。  
+如果只是想单纯的玩玩aop的话，那可以起一个项目，引入 <code>spring-boot-starter-aop</code>,里面包含了spring-boot-starter 􏳪spring-aop 􏳪AspectJ Runtime 􏳪AspectJ Weaver 􏳪spring-core。  
+
+利用Java注解的方式，只有一个类:
+
+    com.liangyt.common.view.RestRequestMappingAspectInterceptor
+ 这个类详细说明了实现的细节。这里不再重复解说了，看这个类就知道了。  
+ 
+ * 好了，第二个分支的内容就到这里了，下一个分支想把shiro集成进来，看有没有时间吧。

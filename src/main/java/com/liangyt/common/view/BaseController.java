@@ -1,6 +1,8 @@
 package com.liangyt.common.view;
 
 import com.liangyt.common.rest.MessageReturn;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -21,6 +23,9 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 public class BaseController {
+    protected Logger logger = LoggerFactory.getLogger(BaseController.class);
+//    protected Logger mongodbLogger = LoggerFactory.getLogger("MONGODB");
+
     @InitBinder
     protected void initBinder(HttpServletRequest request, ServletRequestDataBinder binder) throws Exception {
         binder.registerCustomEditor(Date.class, new CustomDateEditor(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"), true));

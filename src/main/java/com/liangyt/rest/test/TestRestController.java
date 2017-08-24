@@ -4,13 +4,13 @@ import com.liangyt.common.rest.MessageReturn;
 import com.liangyt.common.view.BaseController;
 import com.liangyt.entity.test.Test;
 import com.liangyt.service.test.TestService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
 
 /**
  * 描述：测试Rest
@@ -26,6 +26,7 @@ public class TestRestController extends BaseController {
 
     @RequestMapping(value = "/saveOrUpdate", method = RequestMethod.POST)
     public Object saveOrUpdate(@RequestBody @Validated Test test) {
+
         if (test.getId() != null) {
             testService.update(test);
         }
