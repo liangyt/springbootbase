@@ -1,0 +1,158 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>首页</title>
+    <link rel="stylesheet" href="../../static/css/element-ui.css" th:href="@{css/element-ui.css}" />
+    <link rel="stylesheet" href="../../static/css/style.css" th:href="@{css/style.css}">
+    <script src="../../static/js/vue.js" th:src="@{js/vue.js}"></script>
+    <script src="../../static/js/element-ui.js" th:src="@{js/element-ui.js}"></script>
+    <script src="../../static/js/axios.js" th:src="@{js/axios.js}"></script>
+</head>
+<body>
+<div class="container" id="demo">
+    <el-row >
+        <el-col :xs="24" :sm="24" :md="24" :lg="24">
+            <div style="height: 40px; background-color: #1c8de0;"></div>
+        </el-col>
+    </el-row>
+    <el-row>
+        <el-col :xs="8" :sm="6" :md="6" :lg="4">
+            <el-menu default-active="1-2" class="el-menu-vertical-demo" theme="dark">
+                <el-submenu index="1">
+                    <template slot="title">系统管理</template>
+                    <el-menu-item index="1-1">用户管理</el-menu-item>
+                    <el-menu-item index="1-2">角色管理</el-menu-item>
+                    <el-menu-item index="1-3">功能管理</el-menu-item>
+                </el-submenu>
+                <el-menu-item index="2">导航二</el-menu-item>
+                <el-menu-item index="3">导航三</el-menu-item>
+            </el-menu>
+        </el-col>
+        <el-col :xs="16" :sm="18" :md="18" :lg="20" class="common-content">
+            <div>
+                <el-row>
+                    <el-col :span="24" class="common-breadcrumb">
+                        <el-breadcrumb separator="/" >
+                            <el-breadcrumb-item>首页</el-breadcrumb-item>
+                            <el-breadcrumb-item>活动管理</el-breadcrumb-item>
+                            <el-breadcrumb-item>活动列表</el-breadcrumb-item>
+                            <el-breadcrumb-item>活动详情</el-breadcrumb-item>
+                        </el-breadcrumb>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="24">
+                        <el-form :inline="true" :model="formInline" class="search-form">
+                            <el-form-item label="审批人">
+                                <el-input v-model="formInline.user" placeholder="审批人"></el-input>
+                            </el-form-item>
+                            <el-form-item label="活动区域">
+                                <el-select v-model="formInline.region" placeholder="活动区域">
+                                    <el-option label="区域一" value="shanghai"></el-option>
+                                    <el-option label="区域二" value="beijing"></el-option>
+                                </el-select>
+                            </el-form-item>
+                            <el-form-item>
+                                <el-button type="primary" @click="">查询</el-button>
+                                <el-button type="primary" @click="addDialog">添加</el-button>
+                            </el-form-item>
+                        </el-form>
+
+                        <div class="content-list">
+                            <el-table
+                                    :data="tableData"
+                                    border
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="date"
+                                        label="日期"
+                                        width="150">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="姓名"
+                                        width="120">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="province"
+                                        label="省份"
+                                        width="120">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="city"
+                                        label="市区"
+                                        width="120">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="address"
+                                        label="地址"
+                                        width="300">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="zip"
+                                        label="邮编"
+                                        width="120">
+                                </el-table-column>
+                                <el-table-column
+                                        label="操作"
+                                        width="100">
+                                    <template scope="scope">
+                                        <el-button @click="handleClick" type="text" size="small">查看</el-button>
+                                        <el-button type="text" size="small">编辑</el-button>
+                                        <el-button @click="dialogVisible=true" type="text" size="small">删除</el-button>
+                                    </template>
+                                </el-table-column>
+                            </el-table>
+                            <el-pagination
+                                    @size-change="handleSizeChange"
+                                    @current-change="handleCurrentChange"
+                                    :current-page="currentPage4"
+                                    :page-sizes="[100, 200, 300, 400]"
+                                    :page-size="100"
+                                    layout="total, sizes, prev, pager, next, jumper"
+                                    :total="400"
+                                    style="text-align: right;">
+                            </el-pagination>
+
+                            <el-dialog
+                                    title="提示"
+                                    :visible.sync="dialogVisible"
+                                    size="tiny"
+                                    :before-close="handleClose">
+                                <span>这是一段信息</span>
+                                <span slot="footer" class="dialog-footer">
+                                    <el-button @click="dialogVisible = false">取 消</el-button>
+                                    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                                </span>
+                            </el-dialog>
+                            <el-dialog title="收货地址" :visible.sync="dialogFormVisible">
+                                <el-form :model="form">
+                                    <el-form-item label="活动名称" :label-width="formLabelWidth">
+                                        <el-input v-model="form.name" auto-complete="off"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="活动区域" :label-width="formLabelWidth">
+                                        <el-select v-model="form.region" placeholder="请选择活动区域">
+                                            <el-option label="区域一" value="shanghai"></el-option>
+                                            <el-option label="区域二" value="beijing"></el-option>
+                                        </el-select>
+                                    </el-form-item>
+                                </el-form>
+                                <div slot="footer" class="dialog-footer">
+                                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                                    <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                                </div>
+                            </el-dialog>
+                        </div>
+                    </el-col>
+                </el-row>
+            </div>
+        </el-col>
+    </el-row>
+</div>
+
+<script src="../../static/js/springbootbase/system/demo.js" th:src="@{js/springbootbase/system/login.js}"></script>
+</body>
+</html>

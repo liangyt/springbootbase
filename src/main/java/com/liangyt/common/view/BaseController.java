@@ -52,9 +52,13 @@ public class BaseController {
         List<FieldError> errors = ex.getBindingResult().getFieldErrors();
 
         MessageReturn mr = MessageReturn.fail();
+        StringBuilder sb = new StringBuilder();
         for (FieldError fe : errors) {
             mr.add(fe.getField(), fe.getDefaultMessage());
+            sb.append(fe.getDefaultMessage()).append(",");
         }
+
+        mr.setMessage(sb.substring(0, sb.length() - 1));
 
         return mr;
     }

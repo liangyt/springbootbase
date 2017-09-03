@@ -1,0 +1,15 @@
+{
+  "name": "springbootbase",
+  "version": "1.0.0",
+  "description": "页面开发",
+  "main": "gulpfile.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "liangyt",
+  "license": "ISC",
+  "dependencies": {
+    "browser-sync": "^2.18.13",
+    "gulp": "^3.9.1"
+  }
+}

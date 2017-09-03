@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangyt.repository.system.PermissionMapper">
+  <resultMap id="BaseResultMap" type="com.liangyt.entity.system.Permission">
+    <id column="id" jdbcType="VARCHAR" property="id" />
+    <result column="permission_name" jdbcType="VARCHAR" property="permissionName" />
+    <result column="permission_code" jdbcType="VARCHAR" property="permissionCode" />
+    <result column="pid" jdbcType="VARCHAR" property="pid" />
+    <result column="status" property="status" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from permission
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.liangyt.entity.system.Permission">
+    <selectKey keyProperty="id" resultType="String" order="BEFORE">
+      select REPLACE(UUID(), '-', '') UUID
+    </selectKey>
+    insert into permission (id, permission_name, permission_code, pid, url, status)
+    values (#{id,jdbcType=VARCHAR}, #{permissionName,jdbcType=VARCHAR}, #{permissionCode,jdbcType=VARCHAR}, 
+      #{pid,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}, #{status})
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.liangyt.entity.system.Permission">
+    update permission
+    set permission_name = #{permissionName,jdbcType=VARCHAR},
+      permission_code = #{permissionCode,jdbcType=VARCHAR},
+      pid = #{pid,jdbcType=VARCHAR},
+      url = #{url,jdbcType=VARCHAR},
+      status = #{status}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select id, permission_name, permission_code, pid, url, status
+    from permission
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, permission_name, permission_code, pid, url, status
+    from permission
+  </select>
+
+  <select id="checkPermisssionCode" parameterType="string" resultType="int">
+    SELECT count(0) c
+    from permission
+    where permission_code = #{permissionCode}
+  </select>
+</mapper>

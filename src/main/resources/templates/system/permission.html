@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorator="layout/adminlayout">
+<head>
+    <title>角色管理</title>
+    <script src="../../static/js/springbootbase/system/permission.js" th:src="@{/js/springbootbase/system/permission.js}"></script>
+</head>
+<body>
+<div layout:fragment="content">
+    <el-row>
+        <el-col :span="24" class="common-breadcrumb">
+            <el-breadcrumb separator="/" >
+                <el-breadcrumb-item>首页</el-breadcrumb-item>
+                <el-breadcrumb-item>系统管理</el-breadcrumb-item>
+                <el-breadcrumb-item>功能管理</el-breadcrumb-item>
+            </el-breadcrumb>
+        </el-col>
+    </el-row>
+    <el-row>
+        <el-col :span="24" class="m-l-10">
+            <el-row :span="24">
+                <el-button type="primary" v-on:click="add">新增子节点</el-button>
+                <el-button type="primary" v-on:click="edit">编辑</el-button>
+                <el-button type="warning" v-on:click="deletePermission">删除</el-button>
+            </el-row>
+            <el-row :span="24" class="m-t-10">
+                <el-tree :data="permissionTree" :props="defaultProps" ref="pertree" :highlight-current="true" node-key="id" v-on:node-click="handleNodeClick"></el-tree>
+            </el-row>
+
+            <el-dialog title="菜单和功能" :visible.sync="dialogFormVisible">
+                <el-form :model="form" :rules="addrules" ref="addform">
+                    <el-form-item label="名称" :label-width="formLabelWidth" prop="permissionName">
+                        <el-input v-model="form.permissionName" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="编码" :label-width="formLabelWidth" prop="permissionCode">
+                        <el-input v-model="form.permissionCode" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="路径" :label-width="formLabelWidth">
+                        <el-input v-model="form.url" auto-complete="off"></el-input>
+                    </el-form-item>
+                    <el-form-item label="是否锁住" :label-width="formLabelWidth">
+                        <el-radio-group v-model="form.status">
+                            <el-radio :label="0">否</el-radio>
+                            <el-radio :label="1">是</el-radio>
+                        </el-radio-group>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button v-on:click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" v-on:click="ok">确 定</el-button>
+                </div>
+            </el-dialog>
+        </el-col>
+    </el-row>
+</div>
+</body>
+</html>

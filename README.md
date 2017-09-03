@@ -469,3 +469,133 @@ mongodbLogger.info("保存到数据库中");
  这个类详细说明了实现的细节。这里不再重复解说了，看这个类就知道了。  
  
  * 好了，第二个分支的内容就到这里了，下一个分支想把shiro集成进来，看有没有时间吧。
+ 
+ #### learn.03
+ 这个分支没有写shiro,不过写了一些为集成shiro做准备的工作，把基本的用户管理，角色管理，功能管理，登录，退出工作处理了，还实现了简单的是否登录拦截跳转。如果不想集成shiro的话，
+ 也可以作为一个小系统工作了，这里简单说一下吧。  
+ UI层面使用的是 [element ui](http://element.eleme.io/#/zh-CN)，使用的是最简单的方式集成进来的，直接引用相应的静态资源。
+ ```$xslt
+<link rel="stylesheet" href="../../static/css/element-ui.css" th:href="@{/css/element-ui.css}" />
+<link rel="stylesheet" href="../../static/css/style.css" th:href="@{/css/style.css}">
+<script src="../../static/js/jquery.3.0.min.js" th:src="@{/js/jquery.3.0.min.js}"></script>
+<script src="../../static/js/vue.js" th:src="@{/js/vue.js}"></script>
+<script src="../../static/js/element-ui.js" th:src="@{/js/element-ui.js}"></script>
+<script src="../../static/js/axios.js" th:src="@{/js/axios.js}"></script>
+```
+以上这些就是所有的全局外部资源了。  
+关于 [element ui](http://element.eleme.io/#/zh-CN) 的使用方法，需要的同学直接看它的官网文档就可以了。  
+接着看一下数据结构，总共5个表：
+```$xslt
+用户表：
+
+1	id	varchar	32	0	0		主键	0			0
+0	username	varchar	20	0	0		员工编号			0
+0	password	varchar	50	0	0		密码			0
+0	name	varchar	50	0	0		员工名称			0
+0	status	int	1	0	0	0	用户状态 0 正常	0	0	0
+
+角色表：
+1	id	varchar	32	0	0			0			0
+0	rolename	varchar	100	0	0		角色名			0
+0	status	int	1	0	0	0	角色状态	0	0	0
+0	description	varchar	200	0	1		角色描述			0
+
+功能表：
+1	id	varchar	32	0	0		主键	0			0
+0	permission_name	varchar	100	0	0		功能名称			0
+0	permission_code	varchar	100	0	0		功能代码			0
+0	status	int	1	0	0	0	功能状态	0	0	0
+0	url	varchar	200	0	1					0
+0	pid	varchar	32	0	0		父ID			0
+
+用户跟角色关系表：
+1	user_id	varchar	32	0	0		用户主键	0			0
+2	role_id	varchar	32	0	0		角色主键	0			0
+
+角色跟功能关系表：
+1	permission_id	varchar	32	0	0		功能主键	0			0
+2	role_id	varchar	32	0	0		角色主键	0			0
+```
+好了，这就是所有的表了，可以直接使用 mybatis-generator 生成 mapper entity reposity 到对应的包中(这里的代码示例已经生成，就不需要重新生成了)。  
+```$xslt
+├── entity
+│   ├── system
+│   │   ├── Permission.java
+│   │   ├── PermissionRole.java
+│   │   ├── Role.java
+│   │   ├── User.java
+│   │   └── UserRole.java
+├── repository
+│   ├── system
+│   │   ├── PermissionMapper.java
+│   │   ├── PermissionRoleMapper.java
+│   │   ├── RoleMapper.java
+│   │   └── UserMapper.java
+├── rest
+│   ├── system
+│   │   ├── LoginController.java
+│   │   ├── PermissionController.java
+│   │   ├── RoleController.java
+│   │   └── UserController.java
+└── service
+    ├── system
+    │   ├── LoginService.java
+    │   ├── PermissionService.java
+    │   ├── RoleService.java
+    │   └── UserService.java
+```
+这个是它们的代码结构，后续如果有其它的业务代码的话，直接按照这个结构添加就可以了。具体的代码写法也比较简单，就不一一展示了，直接看就行。
+```$xslt
+└── templates
+    ├── layout
+    │   ├── adminlayout.html
+    ├── login.html
+    └── system
+        ├── demo.html
+        ├── index.html
+        ├── permission.html
+        ├── role.html
+        └── user.html
+```
+这个是视图层代码结构，也比较简单。一个布局页面，其它的是业务页面。
+![image](https://github.com/liangyt/github-resource/blob/master/springbootbase-resource/login.png)
+![image](https://github.com/liangyt/github-resource/blob/master/springbootbase-resource/user.png)
+![image](https://github.com/liangyt/github-resource/blob/master/springbootbase-resource/role.png)
+![image](https://github.com/liangyt/github-resource/blob/master/springbootbase-resource/permission.png)
+
+在类 <code>com.liangyt.config.view.WebMvcViewController</code>设置了过滤：
+```$xslt
+/**
+ * 设置拦截器
+ * @param registry
+ */
+@Override
+public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(testControllerInterceptor).addPathPatterns("/api/**");
+    // 登录页和登录接口不拦截
+    registry.addInterceptor(testControllerInterceptor).excludePathPatterns("/login").excludePathPatterns("/api/login");
+    super.addInterceptors(registry);
+}
+```
+在拦截器类 <code>com.liangyt.common.view.TestControllerInterceptor</code>处理拦截：
+```$xslt
+/**
+ * 进入controller 之前的处理
+ * @param request
+ * @param response
+ * @param handler
+ * @return 返回 false 不进入controller 返回 true 进入controller
+ * @throws Exception
+ */
+@Override
+public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    logger.info(request.getRequestURI());
+    // 用户未登录，则跳转登录页先进行登录
+    if (request.getSession().getAttribute("loginuser") == null) {
+        response.sendRedirect("/login");
+        return false;
+    }
+    return true;
+}
+```
+好了，第三个分支内容就这么多了，直接下载安装依赖，数据库连接配置好，基本就可以跑起来看一下了。下一个分支，估计就是配置shiro了。

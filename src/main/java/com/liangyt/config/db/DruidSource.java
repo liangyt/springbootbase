@@ -212,9 +212,9 @@ public class DruidSource {
         return ds;
     }
 
-    @Bean
-    @Primary
-    public DataSourceTransactionManager masterTransactionManager() throws SQLException {
-        return new DataSourceTransactionManager(dataSource());
-    }
+//    @Bean
+//    @Primary
+//    public DataSourceTransactionManager masterTransactionManager() throws SQLException {
+//        return new DataSourceTransactionManager(dataSource());
+//    }
 }

@@ -1,7 +1,11 @@
 package com.liangyt.common.view;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.liangyt.entity.test.Test;
 import com.liangyt.service.test.TestService;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -19,6 +23,7 @@ import java.util.List;
  */
 @Component
 public class TestControllerInterceptor implements HandlerInterceptor {
+    private Logger logger = LoggerFactory.getLogger(TestControllerInterceptor.class);
 
     @Autowired
     private TestService testService;
@@ -33,9 +38,12 @@ public class TestControllerInterceptor implements HandlerInterceptor {
      */
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        System.out.println(request.getRequestURI());
-
-//        if ("/api/test/all".equals(request.getRequestURI())) return false;
+        logger.info(request.getRequestURI());
+        // 用户未登录，则跳转登录页先进行登录
+        if (request.getSession().getAttribute("loginuser") == null) {
+            response.sendRedirect("/login");
+            return false;
+        }
         return true;
     }
 
@@ -50,7 +58,8 @@ public class TestControllerInterceptor implements HandlerInterceptor {
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         List<Test> list = testService.selectAll();
-        System.out.println(list);
+        ObjectMapper mapper = new ObjectMapper();
+        logger.info(mapper.writeValueAsString(list));
     }
 
     /**

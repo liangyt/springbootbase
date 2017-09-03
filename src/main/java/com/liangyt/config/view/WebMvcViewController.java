@@ -25,7 +25,10 @@ public class WebMvcViewController extends WebMvcConfigurerAdapter {
      */
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("index").setViewName("/index");
+        registry.addViewController("/").setViewName("/system/index");
+        registry.addViewController("/index").setViewName("/index");
+        registry.addViewController("/login").setViewName("/login");
+        registry.addViewController("/system/**");
         super.addViewControllers(registry);
     }
 
@@ -35,7 +38,9 @@ public class WebMvcViewController extends WebMvcConfigurerAdapter {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(testControllerInterceptor).addPathPatterns("/api/test/**");
+//        registry.addInterceptor(testControllerInterceptor).addPathPatterns("/api/**");
+        // 登录页和登录接口不拦截
+        registry.addInterceptor(testControllerInterceptor).excludePathPatterns("/login").excludePathPatterns("/api/login");
         super.addInterceptors(registry);
     }
 }

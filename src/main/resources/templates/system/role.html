@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultrag.net.nz/thymeleaf/layout"
+      layout:decorator="layout/adminlayout">
+<head>
+    <title>角色管理</title>
+    <script src="../../static/js/springbootbase/system/role.js" th:src="@{/js/springbootbase/system/role.js}"></script>
+</head>
+<body>
+<div layout:fragment="content">
+    <el-row>
+        <el-col :span="24" class="common-breadcrumb">
+            <el-breadcrumb separator="/" >
+                <el-breadcrumb-item>首页</el-breadcrumb-item>
+                <el-breadcrumb-item>系统管理</el-breadcrumb-item>
+                <el-breadcrumb-item>角色管理</el-breadcrumb-item>
+            </el-breadcrumb>
+        </el-col>
+    </el-row>
+    <el-row>
+        <el-col :span="24">
+            <el-form :inline="true" :model="searchForm" class="search-form">
+                <el-form-item label="角色名称：">
+                    <el-input v-model="searchForm.keyword" placeholder="请输入角色名称"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <el-button type="primary" v-on:click="search">查询</el-button>
+                    <el-button type="primary" v-on:click="addDialog">添加</el-button>
+                </el-form-item>
+            </el-form>
+
+            <div class="content-list">
+                <el-table
+                        :data="tableData"
+                        border
+                        style="width: 100%">
+                    <el-table-column
+                            prop="rolename"
+                            label="角色名称"
+                            width="150">
+                    </el-table-column>
+                    <el-table-column
+                            prop="description"
+                            label="角色描述">
+                    </el-table-column>
+                    <el-table-column
+                            label="操作"
+                            width="200">
+                        <template scope="scope">
+                            <el-button v-on:click="setPermission(scope.row)" type="text" size="small">设置功能</el-button>
+                            <el-button v-on:click="editRole(scope.row)" type="text" size="small">编辑</el-button>
+                            <el-button v-on:click="deleteRole(scope.row)" type="text" size="small">删除</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <el-pagination
+                        v-on:size-change="handleSizeChange"
+                        v-on:current-change="handleCurrentChange"
+                        :current-page="currentPage"
+                        :page-sizes="[5, 10, 20, 50]"
+                        :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="total"
+                        style="text-align: right;">
+                </el-pagination>
+                <el-dialog title="设置功能"
+                           :visible.sync="setPermissionDiallogVisible"
+                           size="small">
+                    <span>
+                        <el-tree
+                                :data="permissionTreeNodes"
+                                show-checkbox
+                                default-expand-all
+                                node-key="id"
+                                ref="permissionTree"
+                                :default-checked-keys="defaultCheckedKeys"
+                                :props="defaultProps">
+                        </el-tree>
+                    </span>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button v-on:click="setPermissionDiallogVisible = false">取 消</el-button>
+                        <el-button type="primary" v-on:click="setPermissionOk">确 定</el-button>
+                    </span>
+                </el-dialog>
+                <el-dialog
+                        title="警告"
+                        :visible.sync="deleteDialogVisible"
+                        size="tiny">
+                    <span>真的要删除角色 {{currentRole.rolename}} 吗？</span>
+                    <span slot="footer" class="dialog-footer">
+                        <el-button v-on:click="deleteDialogVisible = false">取 消</el-button>
+                        <el-button type="primary" v-on:click="deleteOk">确 定</el-button>
+                    </span>
+                </el-dialog>
+                <el-dialog title="角色" :visible.sync="dialogFormVisible">
+                    <el-form :model="addform" :rules="addrules" ref="addform">
+                        <el-form-item label="角色名称" :label-width="formLabelWidth" prop="rolename">
+                            <el-input v-model="addform.rolename" auto-complete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="角色描述" :label-width="formLabelWidth">
+                            <el-input v-model="addform.description" auto-complete="off"></el-input>
+                        </el-form-item>
+                        <el-form-item label="是否锁住" :label-width="formLabelWidth">
+                            <el-radio-group v-model="addform.status">
+                                <el-radio :label="0">否</el-radio>
+                                <el-radio :label="1">是</el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                    </el-form>
+                    <div slot="footer" class="dialog-footer">
+                        <el-button v-on:click="dialogFormVisible = false">取 消</el-button>
+                        <el-button type="primary" v-on:click="addOk">确 定</el-button>
+                    </div>
+                </el-dialog>
+            </div>
+        </el-col>
+    </el-row>
+</div>
+</body>
+</html>

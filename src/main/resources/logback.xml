@@ -87,12 +87,14 @@ debug: 当此属性设置为true时，将打印出logback内部日志信息，�
     </appender>
 
     <!--日志保存到Mongondb-->
+    <!--
     <appender name="MONGODB" class="com.liangyt.config.db.LogMongoDBAppender">
         <DbHost>localhost</DbHost>
         <DbPort>27017</DbPort>
         <DbName>exapp</DbName>
         <DbCollectionName>logging</DbCollectionName>
     </appender>
+    -->
 
     <!--
         logger节点：设置某一个包或具体的某一个类的日志打印级别、以及指定<appender>。<logger>仅有一个name属性，一个可选的level和一个可选的addtivity属性。
@@ -103,9 +105,11 @@ debug: 当此属性设置为true时，将打印出logback内部日志信息，�
     <logger name="com.liangyt"  level="DEBUG"/>
     <logger name="org.springframework.web" level="DEBUG"/>
 
+    <!--
     <logger name="com.liangyt" level="DEBUG">
         <appender-ref ref="MONGODB" />
     </logger>
+    -->
 
     <!--
         节点root：它也是<loger>元素，但是它是根logger,是所有<logger>的上级。只有一个level属性，因为name已经被命名为"root",且已经是最上级了。
@@ -113,7 +117,7 @@ debug: 当此属性设置为true时，将打印出logback内部日志信息，�
 
          <appender-ref>子节点：可以包含零个或多个<appender-ref>元素，标识这个appender将会添加到这个logger
     -->
-    <root level="DEBUG">
+    <root level="INFO">
         <appender-ref ref="STDOUT" />
         <appender-ref ref="FILE" />
     </root>

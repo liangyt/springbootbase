@@ -13,6 +13,8 @@ import java.util.Map;
 public class MessageReturn<T> {
     private final static int SUCCESS_CODE = 1;
     private final static int FAIL_CODE = 0;
+    private final static int NOLOGIN = 401; // 未验证身份
+    private final static int UNAUTHORIZED = 403; // 未授权
     private final static String SUCCESS = "成功";
     private final static String FAIL = "失败";
     private int code = 1;

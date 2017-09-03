@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangyt.repository.system.PermissionRoleMapper">
+  <resultMap id="BaseResultMap" type="com.liangyt.entity.system.PermissionRole">
+    <id column="permission_id" jdbcType="VARCHAR" property="permissionId" />
+    <id column="role_id" jdbcType="VARCHAR" property="roleId" />
+  </resultMap>
+  <delete id="deleteByPrimaryKey" parameterType="map">
+    delete from permission_role
+    where permission_id = #{permissionId,jdbcType=VARCHAR}
+      and role_id = #{roleId,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.liangyt.entity.system.PermissionRole">
+    insert into permission_role (permission_id, role_id)
+    values (#{permissionId,jdbcType=VARCHAR}, #{roleId,jdbcType=VARCHAR})
+  </insert>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select permission_id, role_id
+    from permission_role
+  </select>
+</mapper>
