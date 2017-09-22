@@ -6,6 +6,7 @@ import com.liangyt.common.view.BaseController;
 import com.liangyt.entity.system.User;
 import com.liangyt.service.system.UserService;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +39,9 @@ public class UserController extends BaseController {
     public Object list(@RequestParam("keyword") String keyword,
                        @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
                        @RequestParam(value = "pageSize", defaultValue = "10") int pageSize) {
+
+        
+
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("keyword", keyword);
         Pageable pageable = new Pageable(pageNum, pageSize);

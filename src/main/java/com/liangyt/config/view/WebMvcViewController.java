@@ -36,11 +36,11 @@ public class WebMvcViewController extends WebMvcConfigurerAdapter {
      * 设置拦截器
      * @param registry
      */
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
 //        registry.addInterceptor(testControllerInterceptor).addPathPatterns("/api/**");
         // 登录页和登录接口不拦截
-        registry.addInterceptor(testControllerInterceptor).excludePathPatterns("/login").excludePathPatterns("/api/login");
-        super.addInterceptors(registry);
-    }
+//        registry.addInterceptor(testControllerInterceptor).excludePathPatterns("/login").excludePathPatterns("/api/login");
+//        super.addInterceptors(registry);
+//    }
 }

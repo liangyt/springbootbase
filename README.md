@@ -599,3 +599,5 @@ public boolean preHandle(HttpServletRequest request, HttpServletResponse respons
 }
 ```
 好了，第三个分支内容就这么多了，直接下载安装依赖，数据库连接配置好，基本就可以跑起来看一下了。下一个分支，估计就是配置shiro了。
+
+http://blog.csdn.net/catoop/article/details/50520958

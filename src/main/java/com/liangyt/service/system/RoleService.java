@@ -1,6 +1,7 @@
 package com.liangyt.service.system;
 
 import com.liangyt.common.service.BaseService;
+import com.liangyt.common.service.DynamicShiroService;
 import com.liangyt.entity.system.PermissionRole;
 import com.liangyt.entity.system.Role;
 import com.liangyt.repository.system.RoleMapper;
@@ -21,6 +22,12 @@ public class RoleService extends BaseService<RoleMapper, Role> {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ShiroService shiroService;
+
+    @Autowired
+    private DynamicShiroService dynamicShiroService;
 
     /**
      * 根据角色ID删除角色相关数据 角色表数据  用户角色关联表数据 角色功能表数据
@@ -71,5 +78,9 @@ public class RoleService extends BaseService<RoleMapper, Role> {
         for (String permission : permissions) {
             insertPermissionRole(new PermissionRole(permission, roleId));
         }
+
+        // 清除所有用户的权限缓存
+        shiroService.clearAuthorizationInfoCache();
+        dynamicShiroService.clearFilterChain();
     }
 }

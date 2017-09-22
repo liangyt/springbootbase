@@ -56,7 +56,7 @@
     </if>
   </select>
 
-  <select id="findUserBoUserno" parameterType="string" resultMap="BaseResultMap">
+  <select id="findUserByUsername" parameterType="string" resultMap="BaseResultMap">
     SELECT id, username, name, password, status
     from user WHERE username = #{username}
   </select>
@@ -84,5 +84,32 @@
   <select id="checkUsercodeExist" parameterType="string" resultType="int">
     select count(0)
     from user where username = #{username}
+  </select>
+
+  <!--根据用户获取有效权限列表-->
+  <select id="findPermissionByUsername" parameterType="string" resultType="string">
+    select DISTINCT permission.permission_code
+    from user
+    inner join user_role on user.id=user_role.user_id
+    inner join role on user_role.role_id = role.id
+    inner join permission_role on user_role.role_id=permission_role.role_id
+    inner join permission on permission_role.permission_id = permission.id
+    where user.username = #{username} and role.status=0 and user.status=0 and permission.status=0
+  </select>
+
+  <!--根据用户获取有效的角色列表-->
+  <select id="findRolesByUsername" parameterType="string" resultType="string">
+    select role.rolename
+    from user
+    inner join user_role on user.id=user_role.user_id
+    inner join role on role.id = user_role.role_id
+    where role.status=0 and user.username=#{username}
+  </select>
+
+  <select id="allPermission" resultType="com.liangyt.vo.system.ShiroFilterVO">
+    select p.url, p.permission_code permissionCode, role.rolename from role
+    inner join permission_role pr on role.id = pr.role_id
+    inner join permission p on pr.permission_id = p.id
+    where role.status = 0 and p.status = 0
   </select>
 </mapper>

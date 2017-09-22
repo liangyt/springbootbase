@@ -175,7 +175,8 @@ public class RestRequestMappingAspectInterceptor {
         try {
             logger.info("请求的参数：" + objectMapper.writeValueAsString(args));
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage());
+//            e.printStackTrace();
         }
 
         Object result = null;

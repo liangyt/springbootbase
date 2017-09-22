@@ -3,9 +3,11 @@ package com.liangyt.repository.system;
 import com.liangyt.common.repository.BaseRepository;
 import com.liangyt.entity.system.User;
 import com.liangyt.entity.system.UserRole;
+import com.liangyt.vo.system.ShiroFilterVO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface UserMapper extends BaseRepository<User>{
@@ -48,5 +50,25 @@ public interface UserMapper extends BaseRepository<User>{
      * @param username
      * @return
      */
-    User findUserBoUserno(String username);
+    User findUserByUsername(String username);
+
+    /**
+     * 根据用户返回该用户有效的权限
+     * @param username
+     * @return
+     */
+    Set<String> findPermissionByUsername(String username);
+
+    /**
+     * 根据用户获取该用户有效的角色列表
+     * @param username
+     * @return
+     */
+    List<String> findRolesByUsername(String username);
+
+    /**
+     * 返回系统所有的角色权限的数据
+     * @return
+     */
+    List<ShiroFilterVO> allPermission();
 }

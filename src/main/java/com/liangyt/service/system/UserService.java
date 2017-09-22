@@ -4,6 +4,7 @@ import com.liangyt.common.service.BaseService;
 import com.liangyt.entity.system.User;
 import com.liangyt.entity.system.UserRole;
 import com.liangyt.repository.system.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +19,9 @@ import java.util.List;
 @SuppressWarnings("all")
 @Service
 public class UserService extends BaseService<UserMapper, User> {
+
+    @Autowired
+    private ShiroService shiroService;
 
     /**
      * 插入用户跟角色的关系
@@ -77,6 +81,9 @@ public class UserService extends BaseService<UserMapper, User> {
         for (String role : roles) {
             this.d.insertUserRole(new UserRole(userId, role));
         }
+
+        // 清除权限缓存
+        shiroService.clearUserAuthorizationInfoCache(selectByPrimaryKey(userId).getUsername());
     }
 
     /**
@@ -93,7 +100,7 @@ public class UserService extends BaseService<UserMapper, User> {
      * @param userno
      * @return
      */
-    public User findUserBoUserno(String userno) {
-        return this.d.findUserBoUserno(userno);
+    public User findUserByUsername(String username) {
+        return this.d.findUserByUsername(username);
     }
 }
