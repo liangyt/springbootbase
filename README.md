@@ -600,4 +600,33 @@ public boolean preHandle(HttpServletRequest request, HttpServletResponse respons
 ```
 好了，第三个分支内容就这么多了，直接下载安装依赖，数据库连接配置好，基本就可以跑起来看一下了。下一个分支，估计就是配置shiro了。
 
-http://blog.csdn.net/catoop/article/details/50520958
+ #### learn.04
+ 隔了这么长的时间，由于项目比较忙，所以写得断断续续的。  
+ 这个分支那就把shiro集成进来了.  
+ 还是老规则，先添加依赖
+ ```apple js
+<!--shiro-spring  包含 shiro-core 和 shiro-web -->
+<dependency>
+    <groupId>org.apache.shiro</groupId>
+    <artifactId>shiro-spring</artifactId>
+    <version>${shiro.version}</version>
+</dependency>
+<dependency>
+    <groupId>org.apache.shiro</groupId>
+    <artifactId>shiro-ehcache</artifactId>
+    <version>${shiro.version}</version>
+</dependency>
+```
+依赖不多就两个，添加依赖之后那就开始配置本次的shiro。由于代码基本都添加了注释，所以跟代码相关的就不多说了吧，直接更新看代码就行。  
+主要的配置类<code>com.liangyt.config.shiro.ShirlConfig</code>就是这个，springboot启动的时候会去配置相关的设置，配置的先后顺序可以看日志就知道了，每个方法都添加了执行日志。
+这里也启用了shiro缓存，使用的是比较简单的ehcache本地缓存.本来是想使用redis缓存的，感觉redis可以作为一个比较大的处理方式，后面再集成进来吧。
+配置shiroFilter的时候，参数有一个<code>ShiroService</code>,这个服务是用来读取跟shiro相关数据的类。
+比如启动过程中就需要配置过滤的权限角色等数据，就是通过这个服务读取的。这样的话在这个服务中引用这个配置类<code>ShirlConfig</code>中某些Bean的时候就需要注意一下，别出来循环引用了。
+<code>ShiroService</code>还可以处理一些缓存相关的操作，比如更新用户角色，更新角色限权时，就需要删除缓存，甚至更新filterShiro的过滤链（<code>com.liangyt.common.service.DynamicShiroService</code>类）。
+* 这种做法有一个问题，只能针对单服务应用有效，集群的时候需要另外考虑方式方法了.
+
+配置了shiro之后，原来的拦截器可以注释掉了。使用shiro的验证就可以了，未登录用户直接跳转登录页.
+
+重新写了一个角色验证器<code>com.liangyt.config.shiro.filter.AnyRolesAuthorizationFilter</code>，因为每个用户可以配置多个角色，每个功能权限可能被多个角色选用,所以用户只需要满足其中的一个角色就可以通过验证。
+
+_这部分有参考网上的一个网友的例子,忘记了出处_

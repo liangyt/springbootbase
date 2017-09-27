@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 /**
- * 描述：
+ * 描述：更新filterShiro的过滤链
  *
  * @author tony
  * @创建时间 2017-09-20 13:55
